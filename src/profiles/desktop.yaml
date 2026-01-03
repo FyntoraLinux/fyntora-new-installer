@@ -1,0 +1,17 @@
+profile:
+  name: "Desktop Environment"
+  description: "Basic KDE Plasma desktop"
+
+packages:
+  - vim
+  - git
+  - networkmanager
+  - xorg
+  - plasma
+  - konsole
+
+services:
+  - NetworkManager
+
+post_install_commands:
+  - echo "Welcome to Arch Linux!" > /etc/motd
