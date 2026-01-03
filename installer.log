@@ -1,0 +1,20 @@
+[2026-01-03 20:21:39] COMMAND: ['pacman', '-Q', 'vim']
+[2026-01-03 20:21:39] STDOUT: vim 9.1.1975-1
+[2026-01-03 20:21:39] STDERR: 
+[2026-01-03 20:21:39] RETURN CODE: 0
+[2026-01-03 20:21:39] Package 'vim' is already installed.
+[2026-01-03 20:21:39] COMMAND: ['pacman', '-Q', 'git']
+[2026-01-03 20:21:39] STDOUT: git 2.52.0-2
+[2026-01-03 20:21:39] STDERR: 
+[2026-01-03 20:21:39] RETURN CODE: 0
+[2026-01-03 20:21:39] Package 'git' is already installed.
+[2026-01-03 20:21:39] COMMAND: ['pacman', '-Q', 'networkmanager']
+[2026-01-03 20:21:39] STDOUT: networkmanager 1.54.3-1
+[2026-01-03 20:21:39] STDERR: 
+[2026-01-03 20:21:39] RETURN CODE: 0
+[2026-01-03 20:21:39] Package 'networkmanager' is already installed.
+[2026-01-03 20:21:39] COMMAND: ['pacman', '-Q', 'xorg']
+[2026-01-03 20:21:39] STDOUT: 
+[2026-01-03 20:21:39] STDERR: fout:pakket 'xorg' niet gevonden
+[2026-01-03 20:21:39] RETURN CODE: 1
+[2026-01-03 20:21:39] Package 'xorg' is NOT installed.

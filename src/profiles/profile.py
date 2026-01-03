@@ -26,3 +26,8 @@ class SelectResult(Enum):
 	NewSelection = auto()
 	SameSelection = auto()
 	ResetCurrent = auto()
+
+class Profile:
+    def __init__(
+        # TODO
+    )
