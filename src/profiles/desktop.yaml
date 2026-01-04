@@ -1,17 +1,24 @@
 profile:
-  name: "Desktop Environment"
-  description: "Basic KDE Plasma desktop"
+  name: "Basic Desktop Environment"
+  description: "Basic Desktop"
 
 packages:
   - vim
   - git
   - networkmanager
   - xorg
-  - plasma
-  - konsole
+  - nano
+  - xorg-server
+  - xorg-xinit
+  - xinit
+  - noto-fonts
 
 services:
   - NetworkManager
 
 post_install_commands:
-  - echo "Welcome to Arch Linux!" > /etc/motd
+  - echo "Welcome to Fyntora Linux!" > /etc/motd
+
+post_configuration_commands:
+  - tocuh ~/.xinitrc
+  - echo exec ~/.defined/fyn-window-manager/fynwindow-manager > ~/xinitrc
