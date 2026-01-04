@@ -1,6 +1,7 @@
 import subprocess
 import datetime
 
+
 class CommandUseHelper:
     def __init__(self, log_file="installer.log"):
         self.log_file = log_file
@@ -11,12 +12,13 @@ class CommandUseHelper:
         with open(self.log_file, "a") as f:
             f.write(f"{timestamp} {message}\n")
 
-    def SysRunCommand(self, command, as_root=False):
+    def SysRunCommand(self, command, as_root=False, input_text=None):
         """
         Runs a system command, optionally as root, and logs the result.
-        
+
         :param command: Command to run (string or list)
         :param as_root: Whether to run with sudo
+        :param input_text: Text to send to stdin of the command
         :return: (stdout, stderr, returncode)
         """
         if as_root:
@@ -27,9 +29,21 @@ class CommandUseHelper:
 
         try:
             if isinstance(command, str):
-                result = subprocess.run(command, shell=True, capture_output=True, text=True)
+                result = subprocess.run(
+                    command,
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    input=input_text,
+                )
             else:
-                result = subprocess.run(command, shell=False, capture_output=True, text=True)
+                result = subprocess.run(
+                    command,
+                    shell=False,
+                    capture_output=True,
+                    text=True,
+                    input=input_text,
+                )
 
             # Log command and output
             self._log(f"COMMAND: {command}")
@@ -45,7 +59,7 @@ class CommandUseHelper:
     def CheckPackage(self, package_name):
         """
         Checks if a package is installed using pacman.
-        
+
         :param package_name: Name of the package
         :return: True if installed, False otherwise
         """
@@ -60,14 +74,16 @@ class CommandUseHelper:
     def InstallPackage(self, package_name):
         """
         Installs a package using pacman if it is not already installed.
-        
+
         :param package_name: Name of the package
         :return: True if installed successfully or already installed
         """
         if self.CheckPackage(package_name):
             return True
 
-        stdout, stderr, code = self.SysRunCommand(["pacman", "-S", "--noconfirm", "--needed", package_name], as_root=True)
+        stdout, stderr, code = self.SysRunCommand(
+            ["pacman", "-S", "--noconfirm", "--needed", package_name], as_root=True
+        )
         if code == 0:
             self._log(f"Successfully installed '{package_name}'.")
             return True
@@ -75,11 +91,10 @@ class CommandUseHelper:
             self._log(f"Failed to install '{package_name}'. Error: {stderr}")
             return False
 
+
 # # Example usage
 # if __name__ == "__main__":
 #     helper = ArchInstallerHelper()
 #     helper.SysRunCommand("echo Hello, Arch Installer!", as_root=False)
 #     print(helper.CheckPackage("vim"))  # Check if vim is installed
 #     helper.InstallPackage("vim")       # Install vim if missing
-
-

@@ -1,0 +1,80 @@
+profile:
+  name: "Desktop Environment"
+  description: "Full desktop environment with GUI"
+
+# Global configuration applied to all modules
+global:
+  mount_point: "/mnt"
+  device: "/dev/sda"  # Installation device
+  hostname: "fyntora-desktop"
+  locale: "en_US.UTF-8"
+  timezone: "America/New_York"
+
+# List of modules to install
+modules:
+  - base
+  - bootloader
+  - network
+  - user
+  - packages
+  - services
+  - config
+
+# Module-specific configurations
+base:
+  base_packages:
+    - base
+    - base-devel
+    - linux
+    - linux-firmware
+    - linux-headers
+
+bootloader:
+  type: "grub"
+
+network:
+  network_manager: "NetworkManager"
+
+user:
+  users:
+    - username: "user"
+      password: "password"  # In production, this should be hashed or prompted
+      groups: ["wheel", "audio", "video"]
+      shell: "/bin/bash"
+
+packages:
+  packages:
+    - vim
+    - git
+    - networkmanager
+    - xorg
+    - xorg-server
+    - xorg-xinit
+    - plasma-desktop
+    - plasma-wayland-session
+    - sddm
+    - konsole
+    - dolphin
+    - firefox
+    - noto-fonts
+    - noto-fonts-emoji
+
+services:
+  services:
+    - NetworkManager
+    - sddm
+
+# Legacy compatibility (will be converted to modules)
+legacy_packages:
+  - vim
+  - git
+  - networkmanager
+  - xorg
+  - plasma
+  - konsole
+
+legacy_services:
+  - NetworkManager
+
+post_install_commands:
+  - echo "Welcome to Fyntora Linux Desktop!" > /etc/motd

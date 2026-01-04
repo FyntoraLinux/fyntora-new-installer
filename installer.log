@@ -38,3 +38,4 @@
 [2026-01-03 20:25:39] STDERR: fout:pakket 'xorg' niet gevonden
 [2026-01-03 20:25:39] RETURN CODE: 1
 [2026-01-03 20:25:39] Package 'xorg' is NOT installed.
+[2026-01-04 19:05:11] [base] Base installation requires root privileges
