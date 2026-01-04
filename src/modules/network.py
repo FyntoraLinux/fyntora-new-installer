@@ -24,16 +24,24 @@ class NetworkModule(ModuleBase):
         """
         Validate network configuration requirements.
         """
+        self.log("Starting network module validation...")
+
         hostname = self.get_config("hostname")
+        self.log(f"Hostname config: '{hostname}'")
         if not hostname:
-            self.log("No hostname specified")
-            return False
+            # Provide a default hostname if none specified
+            hostname = "archlinux"
+            self.log(f"Using default hostname: {hostname}")
+            # Set it in config so other parts can use it
+            self.config["hostname"] = hostname
 
         mount_point = self.get_config("mount_point", "/mnt")
+        self.log(f"Mount point config: '{mount_point}'")
         if not os.path.exists(mount_point):
             self.log(f"Mount point {mount_point} does not exist")
             return False
 
+        self.log("Network module validation passed")
         return True
 
     def install(self) -> bool:

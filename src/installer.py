@@ -230,17 +230,19 @@ def main():
 
     # Parse arguments
     profile_name = None
-    config_override = {"global": {"mount_point": "/mnt"}}
+    config_override = {}
 
     i = 1
     while i < len(sys.argv):
         arg = sys.argv[i]
         if arg.startswith("--"):
             if arg == "--device" and i + 1 < len(sys.argv):
-                config_override["global"]["device"] = sys.argv[i + 1]
+                config_override.setdefault("global", {})["device"] = sys.argv[i + 1]
                 i += 2
             elif arg == "--mount" and i + 1 < len(sys.argv):
-                config_override["global"]["mount_point"] = sys.argv[i + 1]
+                config_override.setdefault("global", {})["mount_point"] = sys.argv[
+                    i + 1
+                ]
                 i += 2
             else:
                 print(f"Unknown option: {arg}")
@@ -258,23 +260,6 @@ def main():
         return 1
 
     installer = ModularInstaller()
-
-    success = installer.install_from_profile(profile_name, config_override)
-    return 0 if success else 1
-
-    # Profile-based installation
-    profile_name = sys.argv[1]
-
-    installer = ModularInstaller()
-
-    # For now, use default configuration
-    # In a full implementation, this would load from config files
-    config_override = {
-        "global": {
-            "device": "/dev/sda",  # Should be detected or specified
-            "mount_point": "/mnt",
-        }
-    }
 
     success = installer.install_from_profile(profile_name, config_override)
     return 0 if success else 1
