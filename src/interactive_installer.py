@@ -295,15 +295,36 @@ class InteractiveInstaller:
         print("-" * 25)
 
         # Get installation device
+        print("Available disk devices:")
+        try:
+            stdout, stderr, code = self.helper.SysRunCommand(
+                ["lsblk", "-d", "-n", "-o", "NAME,SIZE"]
+            )
+            if code == 0:
+                print(stdout)
+            else:
+                print("Could not list devices")
+        except:
+            print("Could not list devices")
+
         while True:
             device = input(
                 "Installation device (e.g., /dev/sda, /dev/nvme0n1): "
             ).strip()
-            if device and os.path.exists(device):
-                self.config.setdefault("base", {})["device"] = device
-                break
+            if device:
+                # Check if it's a valid block device
+                if os.path.exists(device) and os.path.exists(
+                    f"/sys/block/{os.path.basename(device)}"
+                ):
+                    self.config["device"] = device
+                    print(f"✓ Selected device: {device}")
+                    break
+                else:
+                    print(
+                        "❌ Device not found or not a valid block device. Please check the path."
+                    )
             else:
-                print("❌ Device not found. Please check the path.")
+                print("Device cannot be empty.")
 
         # Base packages
         packages_input = input(
@@ -404,6 +425,46 @@ class InteractiveInstaller:
         if not mount_point:
             mount_point = "/mnt"
         self.config.setdefault("global", {})["mount_point"] = mount_point
+
+        # Device override (for profile-based installations)
+        current_device = self.config.get("global", {}).get("device", "")
+        if current_device:
+            print(f"Current device from profile: {current_device}")
+            device_override = input(f"Override device [{current_device}]: ").strip()
+            if device_override:
+                if os.path.exists(device_override) and os.path.exists(
+                    f"/sys/block/{os.path.basename(device_override)}"
+                ):
+                    self.config["global"]["device"] = device_override
+                    print(f"✓ Device overridden to: {device_override}")
+                else:
+                    print("❌ Invalid device, keeping original.")
+        else:
+            # No device set, prompt for it
+            print("Available disk devices:")
+            try:
+                stdout, stderr, code = self.helper.SysRunCommand(
+                    ["lsblk", "-d", "-n", "-o", "NAME,SIZE"]
+                )
+                if code == 0:
+                    print(stdout)
+                else:
+                    print("Could not list devices")
+            except:
+                print("Could not list devices")
+
+            while True:
+                device = input("Installation device (e.g., /dev/sda): ").strip()
+                if (
+                    device
+                    and os.path.exists(device)
+                    and os.path.exists(f"/sys/block/{os.path.basename(device)}")
+                ):
+                    self.config["global"]["device"] = device
+                    print(f"✓ Selected device: {device}")
+                    break
+                else:
+                    print("❌ Invalid device. Please check the path.")
 
         # Locale
         locale = input("System locale [en_US.UTF-8]: ").strip()

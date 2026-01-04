@@ -205,13 +205,19 @@ def main():
     if len(sys.argv) < 2 or sys.argv[1] in ["--help", "-h"]:
         print("Fyntora Linux Installer")
         print("Usage:")
-        print("  python install.py --interactive    # Interactive installation")
-        print("  python install.py <profile_name>   # Install from profile")
+        print(
+            "  python install.py --interactive              # Interactive installation"
+        )
+        print("  python install.py <profile_name> [options]   # Install from profile")
+        print()
+        print("Options:")
+        print("  --device /dev/sdX    Override installation device")
+        print("  --mount /mnt         Override mount point")
         print()
         print("Examples:")
         print("  python install.py --interactive")
         print("  python install.py desktop")
-        print("  python install.py desktop_modular")
+        print("  python install.py desktop_modular --device /dev/nvme0n1")
         return 0
 
     if sys.argv[1] == "--interactive":
@@ -221,6 +227,40 @@ def main():
         installer = InteractiveInstaller()
         success = installer.run()
         return 0 if success else 1
+
+    # Parse arguments
+    profile_name = None
+    config_override = {"global": {"mount_point": "/mnt"}}
+
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg.startswith("--"):
+            if arg == "--device" and i + 1 < len(sys.argv):
+                config_override["global"]["device"] = sys.argv[i + 1]
+                i += 2
+            elif arg == "--mount" and i + 1 < len(sys.argv):
+                config_override["global"]["mount_point"] = sys.argv[i + 1]
+                i += 2
+            else:
+                print(f"Unknown option: {arg}")
+                return 1
+        else:
+            if profile_name is None:
+                profile_name = arg
+            else:
+                print(f"Unexpected argument: {arg}")
+                return 1
+            i += 1
+
+    if not profile_name:
+        print("Error: No profile specified")
+        return 1
+
+    installer = ModularInstaller()
+
+    success = installer.install_from_profile(profile_name, config_override)
+    return 0 if success else 1
 
     # Profile-based installation
     profile_name = sys.argv[1]

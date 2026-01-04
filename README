@@ -84,6 +84,12 @@ make install-desktop
 
 # Or run directly
 sudo python install.py desktop
+
+# Install with device override (important for different hardware)
+sudo python install.py desktop_modular --device /dev/nvme0n1
+
+# Override both device and mount point
+sudo python install.py desktop_modular --device /dev/vda --mount /target
 ```
 
 ### Modular Installation
@@ -94,6 +100,9 @@ make install-modular
 
 # Or run directly
 sudo python install.py desktop_modular
+
+# Override settings
+sudo python install.py desktop_modular --device /dev/vda --mount /target
 ```
 
 ## Interactive Installation Guide
@@ -113,6 +122,18 @@ The interactive installer guides you through the installation process with promp
 - Internet connection for package downloads
 - Backup your data (installation destroys disk contents)
 - At least 8GB free space for basic installation
+- Valid disk device (installer will show available devices)
+- Required packages: `arch-install-scripts`, `parted`, `mkinitcpio`
+
+### Device Selection
+
+The installer automatically detects available disk devices. Common device names:
+- `/dev/sda` - SATA/SCSI drives
+- `/dev/nvme0n1` - NVMe SSDs
+- `/dev/vda` - Virtual machines
+- `/dev/mmcblk0` - SD cards
+
+Use `--device /dev/XXX` to override the default device in profiles.
 
 ## Available Modules
 

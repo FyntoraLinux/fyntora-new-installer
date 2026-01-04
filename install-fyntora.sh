@@ -61,14 +61,18 @@ if ! command -v python3 &> /dev/null; then
 fi
 
 # Check for installer files
-INSTALLER_DIR="/root/fyntora-installer"
-if [[ ! -d "$INSTALLER_DIR" ]]; then
-    print_error "Installer not found at $INSTALLER_DIR"
-    print_error "Please ensure the installer is properly set up."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALLER_DIR="$SCRIPT_DIR"
+
+# Verify this is the installer directory
+if [[ ! -f "$INSTALLER_DIR/install.py" ]] || [[ ! -d "$INSTALLER_DIR/src" ]]; then
+    print_error "This doesn't appear to be the Fyntora installer directory."
+    print_error "Please run this script from the installer root directory."
+    print_error "Expected files: install.py, src/"
     exit 1
 fi
 
-cd "$INSTALLER_DIR"
+print_status "Found Fyntora installer at: $INSTALLER_DIR"
 
 # Run the interactive installer
 print_status "Starting Fyntora Linux Installer..."

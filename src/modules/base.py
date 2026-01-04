@@ -24,6 +24,8 @@ class BaseModule(ModuleBase):
         """
         Validate base installation requirements.
         """
+        self.log("Starting base module validation...")
+
         # Check if we're running as root or have sudo access
         if os.geteuid() != 0:
             self.log("Base installation requires root privileges")
@@ -39,15 +41,32 @@ class BaseModule(ModuleBase):
 
         # Validate required config
         device = self.get_config("device")
+        self.log(f"Device config: {device}")
         if not device:
             self.log("No installation device specified")
             return False
 
-        mount_point = self.get_config("mount_point", "/mnt")
-        if not os.path.exists(mount_point):
-            self.log(f"Mount point {mount_point} does not exist")
-            return False
+        # Check if device exists (optional - partitioning will create partitions)
+        if not os.path.exists(device):
+            self.log(
+                f"Warning: Device {device} does not exist yet - this is OK for partitioning"
+            )
+        else:
+            self.log(f"Device {device} exists")
 
+        mount_point = self.get_config("mount_point", "/mnt")
+        self.log(f"Mount point config: {mount_point}")
+        if not os.path.exists(mount_point):
+            self.log(f"Creating mount point {mount_point}")
+            try:
+                os.makedirs(mount_point, exist_ok=True)
+            except Exception as e:
+                self.log(f"Failed to create mount point {mount_point}: {str(e)}")
+                return False
+        else:
+            self.log(f"Mount point {mount_point} exists")
+
+        self.log("Base module validation passed")
         return True
 
     def install(self) -> bool:
