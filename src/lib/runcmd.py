@@ -1,7 +1,7 @@
 import subprocess
 import datetime
 
-class ArchInstallerHelper:
+class CommandUseHelper:
     def __init__(self, log_file="installer.log"):
         self.log_file = log_file
 

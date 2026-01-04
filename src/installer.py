@@ -3,7 +3,7 @@
 
 import yaml
 import os
-from lib.runcmd import ArchInstallerHelper
+from lib.runcmd import CommandUseHelper
 
 class ProfileLoader:
     def __init__(self, profiles_dir="src/profiles"):
@@ -32,7 +32,7 @@ class ProfileLoader:
                 raise ValueError(f"Profile missing required key: {key}")
 
 if __name__ == "__main__":
-    helper = ArchInstallerHelper()
+    helper = CommandUseHelper()
     loader = ProfileLoader()
 
     profile = loader.load("desktop")
